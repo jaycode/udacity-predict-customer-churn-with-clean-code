@@ -1,29 +1,28 @@
-# This library has all the functions needed for churn prediction.
+'''
+This library has all the functions needed for churn prediction.
+'''
 
 # Set the directories
+import os
+import time
+import seaborn as sns
+from sklearn.metrics import plot_roc_curve, classification_report
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import joblib
+import shap
 IMAGE_DIR_EDA = './images/eda/'
 IMAGE_DIR_RESULTS = './images/results/'
 MODEL_DIR = './models/'
 
 # import libraries
-import os
-os.environ['QT_QPA_PLATFORM']='offscreen'
-import shap
-import joblib
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns; sns.set()
-
-from sklearn.preprocessing import normalize
-from sklearn.model_selection import train_test_split
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV
-
-from sklearn.metrics import plot_roc_curve, classification_report
-import time
+os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+sns.set()
 
 
 def import_data(pth):
@@ -36,7 +35,8 @@ def import_data(pth):
             df: pandas dataframe
     '''
     df = pd.read_csv(pth)
-    df['Churn'] = df['Attrition_Flag'].apply(lambda val: 0 if val == "Existing Customer" else 1)
+    df['Churn'] = df['Attrition_Flag'].apply(
+        lambda val: 0 if val == "Existing Customer" else 1)
     return df
 
 
@@ -69,15 +69,15 @@ def perform_eda(df, image_dir_eda=IMAGE_DIR_EDA):
          'plot_fn': lambda: sns.histplot(df['Total_Trans_Ct'], stat='density', kde=True),
          'path': os.path.join(image_dir_eda, 'ttc_dens.png')},
         {'name': "Correlation plot",
-         'plot_fn': lambda: sns.heatmap(df.corr(), annot=False, cmap='Dark2_r', linewidths = 2),
+         'plot_fn': lambda: sns.heatmap(df.corr(), annot=False, cmap='Dark2_r', linewidths=2),
          'path': os.path.join(image_dir_eda, 'corrplot.png'),
-         'size': (20,10)},
+         'size': (20, 10)},
     ]
     for config in plot_configs:
         if 'size' in config:
             plt.figure(figsize=config['size'])
         else:
-            plt.figure(figsize=(8,5))
+            plt.figure(figsize=(8, 5))
         plot = config['plot_fn']()
         plt.tight_layout()
         fig = plot.get_figure()
@@ -138,15 +138,29 @@ def perform_feature_engineering(df, response, test_size=0.3, random_state=42):
     df = encoder_helper(df, cat_columns, response)
     y = df['Churn']
     X = pd.DataFrame()
-    keep_cols = ['Customer_Age', 'Dependent_count', 'Months_on_book',
-                 'Total_Relationship_Count', 'Months_Inactive_12_mon',
-                 'Contacts_Count_12_mon', 'Credit_Limit', 'Total_Revolving_Bal',
-                 'Avg_Open_To_Buy', 'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
-                 'Total_Trans_Ct', 'Total_Ct_Chng_Q4_Q1', 'Avg_Utilization_Ratio',
-                 'Gender_Churn', 'Education_Level_Churn', 'Marital_Status_Churn',
-                 'Income_Category_Churn', 'Card_Category_Churn']
+    keep_cols = [
+        'Customer_Age',
+        'Dependent_count',
+        'Months_on_book',
+        'Total_Relationship_Count',
+        'Months_Inactive_12_mon',
+        'Contacts_Count_12_mon',
+        'Credit_Limit',
+        'Total_Revolving_Bal',
+        'Avg_Open_To_Buy',
+        'Total_Amt_Chng_Q4_Q1',
+        'Total_Trans_Amt',
+        'Total_Trans_Ct',
+        'Total_Ct_Chng_Q4_Q1',
+        'Avg_Utilization_Ratio',
+        'Gender_Churn',
+        'Education_Level_Churn',
+        'Marital_Status_Churn',
+        'Income_Category_Churn',
+        'Card_Category_Churn']
     X[keep_cols] = df[keep_cols]
-    return train_test_split(X, y, test_size=test_size, random_state=random_state)
+    return train_test_split(X, y, test_size=test_size,
+                            random_state=random_state)
 
 
 def classification_report_image(y_train,
@@ -184,25 +198,28 @@ def classification_report_image(y_train,
     print(classification_report(y_train, y_train_preds_lr))
 
     # Create & store plot
-    plt.rc('figure', figsize=(5, 5))
-    #plt.text(0.01, 0.05, str(model.summary()), {'fontsize': 12}) old approach
+    plt.figure(figsize=(5, 5))
+
+    # plt.text(0.01, 0.05, str(model.summary()), {'fontsize': 12}) old approach
     plt.text(0.01, 1.25, str('Random Forest Train'), {'fontsize': 10},
-             fontproperties = 'monospace')
+             fontproperties='monospace')
 
     # approach improved by OP -> monospace!
     plt.text(0.01, 0.05, str(classification_report(y_test, y_test_preds_rf)),
-             {'fontsize': 10}, fontproperties = 'monospace')
+             {'fontsize': 10}, fontproperties='monospace')
 
     plt.text(0.01, 0.6, str('Random Forest Test'),
-             {'fontsize': 10}, fontproperties = 'monospace')
+             {'fontsize': 10}, fontproperties='monospace')
 
     # approach improved by OP -> monospace!
     plt.text(0.01, 0.7, str(classification_report(y_train, y_train_preds_rf)),
-             {'fontsize': 10}, fontproperties = 'monospace')
+             {'fontsize': 10}, fontproperties='monospace')
     plt.axis('off')
 
     plt.tight_layout()
     plt.savefig(output_pth)
+    plt.close()
+
 
 def feature_importance_plot(model, X_data, output_pth):
     '''
@@ -224,7 +241,7 @@ def feature_importance_plot(model, X_data, output_pth):
     names = [X_data.columns[i] for i in indices]
 
     # Create plot
-    plt.figure(figsize=(20,5))
+    plt.figure(figsize=(20, 5))
 
     # Create plot title
     plt.title("Feature Importance")
@@ -234,17 +251,18 @@ def feature_importance_plot(model, X_data, output_pth):
     plt.bar(range(X_data.shape[1]), importances[indices])
 
     # Add feature names as x-axis labels
-    plt.xticks(range(X_data.shape[1]), names, rotation=90);
+    plt.xticks(range(X_data.shape[1]), names, rotation=90)
 
     plt.tight_layout()
     plt.savefig(output_pth)
+
 
 def train_models(X_train, X_test, y_train, y_test,
                  param_grid_rfc={
                      'n_estimators': [200, 500],
                      'max_features': ['auto', 'sqrt'],
-                     'max_depth' : [4,5,100],
-                     'criterion' :['gini', 'entropy']
+                     'max_depth': [4, 5, 100],
+                     'criterion': ['gini', 'entropy']
                  },
                  image_dir_results=IMAGE_DIR_RESULTS,
                  model_dir=MODEL_DIR):
@@ -265,7 +283,8 @@ def train_models(X_train, X_test, y_train, y_test,
     # grid search
     rfc = RandomForestClassifier(random_state=42)
     # Use a different solver if the default 'lbfgs' fails to converge
-    # Reference: https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+    # Reference:
+    # https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
     lrc = LogisticRegression(solver='lbfgs', max_iter=3000)
 
     cv_rfc = GridSearchCV(estimator=rfc, param_grid=param_grid_rfc, cv=5)
@@ -279,7 +298,9 @@ def train_models(X_train, X_test, y_train, y_test,
     minutes = int(duration // 60)
     seconds = int(duration % 60)
 
-    print(f"Training Random Forest Classifier took {minutes} minutes and {seconds} seconds.")
+    print(
+        f"Training Random Forest Classifier took {minutes}" \
+        + " minutes and {seconds} seconds.")
 
     start_time = time.time()
     print("Training the Logistic Regression model...")
@@ -289,7 +310,9 @@ def train_models(X_train, X_test, y_train, y_test,
     minutes = int(duration // 60)
     seconds = int(duration % 60)
 
-    print(f"Training Logistic Regression model took {minutes} minutes and {seconds} seconds.")
+    print(
+        f"Training Logistic Regression model took {minutes}" \
+        + " minutes and {seconds} seconds.")
 
     y_train_preds_rf = cv_rfc.best_estimator_.predict(X_train)
     y_test_preds_rf = cv_rfc.best_estimator_.predict(X_test)
@@ -302,26 +325,33 @@ def train_models(X_train, X_test, y_train, y_test,
     plt.figure(figsize=(15, 8))
     ax = plt.gca()
     lrc_plot = plot_roc_curve(lrc, X_test, y_test)
-    rfc_disp = plot_roc_curve(cv_rfc.best_estimator_, X_test, y_test, ax=ax, alpha=0.8)
+    plot_roc_curve(
+        cv_rfc.best_estimator_,
+        X_test,
+        y_test,
+        ax=ax,
+        alpha=0.8)
     lrc_plot.plot(ax=ax, alpha=0.8)
     plt.tight_layout()
     path = os.path.join(image_dir_results, 'roc_curve.png')
     plt.savefig(path, bbox_inches='tight')
     print(f"Saved ROC curve to {path}")
+    plt.close()
 
     explainer = shap.TreeExplainer(cv_rfc.best_estimator_)
     print("explainer created")
     shap_values = explainer.shap_values(X_test)
     print("shap_values created")
-    shap.summary_plot(shap_values, X_test, plot_type="bar")
+
+    fig, ax = plt.subplots()
+    shap.summary_plot(shap_values, X_test, plot_type="bar", show=False)
     print("summary plot created")
 
     # TRICKY! Capture the current figure after shap.summary_plot
-    fig = plt.gcf()
     path = os.path.join(image_dir_results, 'summary.png')
     fig.savefig(path, bbox_inches='tight')
-    plt.close(fig)
     print(f"Saved Summary plot to {path}")
+    plt.close(fig)
 
     # Store classification report as image
     output_pth = os.path.join(image_dir_results, 'classification_results.png')
@@ -359,5 +389,6 @@ if __name__ == "__main__":
     df = import_data(DATA_PATH)
     perform_eda(df)
     response = 'Churn'
-    X_train, X_test, y_train, y_test = perform_feature_engineering(df, response)
+    X_train, X_test, y_train, y_test = perform_feature_engineering(
+        df, response)
     train_models(X_train, X_test, y_train, y_test)

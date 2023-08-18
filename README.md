@@ -26,11 +26,25 @@ To test with `pytest`, run this command:
 pytest churn_script_logging_and_testing.py
 ```
 
+Logs of the pytest run are stored in the `./logs/` directory.
+
+Note: If you want to display the print outputs, you may run it with a `-s` argument.
+
 To do a test-run with all functions in the library, simply run it like so:
 
 ```
 python churn_library.py
 ```
+
+## Code Quality Metrics
+
+### Follows PEP 8 Guidelines
+
+ Running `pylint ./churn_libraries.py` gave me a score of 7.84.
+ Running `pylint ./churn_script_logging_and_tests.py` gave me a score of 7.62.
+
+
+### Runs Successfully
 
 Running the pytest command above locally produced the following output:
 

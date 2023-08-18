@@ -1,0 +1,3 @@
+churn_script_logging_and_tests - INFO - Testing import_data: SUCCESS
+churn_script_logging_and_tests - INFO - Age history plot created.
+churn_script_logging_and_tests - INFO - Gender_Churn is created.
