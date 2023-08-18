@@ -1,3 +1,10 @@
+'''
+The script that contains test functions to be run with `pytest`.
+
+Author: Jay Teguh
+Creation Date: 08/17/2023
+'''
+
 import os
 import logging
 import pytest

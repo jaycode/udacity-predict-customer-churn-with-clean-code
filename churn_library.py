@@ -1,5 +1,8 @@
 '''
 This library has all the functions needed for churn prediction.
+
+Author: Jay Teguh
+Creation Date: 08/17/2023
 '''
 
 # Set the directories
@@ -198,22 +201,28 @@ def classification_report_image(y_train,
     print(classification_report(y_train, y_train_preds_lr))
 
     # Create & store plot
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(5, 9))
 
-    # plt.text(0.01, 0.05, str(model.summary()), {'fontsize': 12}) old approach
-    plt.text(0.01, 1.25, str('Random Forest Train'), {'fontsize': 10},
-             fontproperties='monospace')
+    plt.text(0.01, 1.00, 'Random Forest Test Results', {'fontsize': 12},
+        fontproperties='monospace')
+    plt.text(0.01, 0.775, str(classification_report(y_test, y_test_preds_rf)),
+        {'fontsize': 10}, fontproperties='monospace')
 
-    # approach improved by OP -> monospace!
-    plt.text(0.01, 0.05, str(classification_report(y_test, y_test_preds_rf)),
-             {'fontsize': 10}, fontproperties='monospace')
+    plt.text(0.01, 0.725, 'Random Forest Train Results', {'fontsize': 12},
+        fontproperties='monospace')
+    plt.text(0.01, 0.5, str(classification_report(y_train, y_train_preds_rf)),
+        {'fontsize': 10}, fontproperties='monospace')
 
-    plt.text(0.01, 0.6, str('Random Forest Test'),
-             {'fontsize': 10}, fontproperties='monospace')
+    plt.text(0.01, 0.450, 'Logistic Regression Test Results', {'fontsize': 12},
+        fontproperties='monospace')
+    plt.text(0.01, 0.225, str(classification_report(y_test, y_test_preds_lr)),
+        {'fontsize': 10}, fontproperties='monospace')
 
-    # approach improved by OP -> monospace!
-    plt.text(0.01, 0.7, str(classification_report(y_train, y_train_preds_rf)),
-             {'fontsize': 10}, fontproperties='monospace')
+    plt.text(0.01, 0.175, 'Logistic Regression Train Results', {'fontsize': 12},
+        fontproperties='monospace')
+    plt.text(0.01, -0.05, str(classification_report(y_train, y_train_preds_lr)),
+        {'fontsize': 10}, fontproperties='monospace')
+
     plt.axis('off')
 
     plt.tight_layout()
@@ -254,7 +263,7 @@ def feature_importance_plot(model, X_data, output_pth):
     plt.xticks(range(X_data.shape[1]), names, rotation=90)
 
     plt.tight_layout()
-    plt.savefig(output_pth)
+    plt.savefig(output_pth, bbox_inches='tight')
 
 
 def train_models(X_train, X_test, y_train, y_test,

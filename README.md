@@ -1,15 +1,44 @@
 # Predict Customer Churn
 
-- Project **Predict Customer Churn** of ML DevOps Engineer Nanodegree Udacity
+Project **Predict Customer Churn** of ML DevOps Engineer Nanodegree Udacity
 
 ## Project Description
-This is my submission for the Predict Customer Churn project by Udacity
+
+In this project, we identify credit card customers that are most likely to churn. The completed project includes a Python package for a machine learning project that follows coding (PEP8) and engineering best practices for implementing software (modular, documented, and tested). The package will also have the flexibility of being run interactively or from the command-line interface (CLI).
 
 ## Files and data description
 
-- `churn_notebook.pynb`: The notebook that contains unrefactored code.
-- `churn_library.py`: The refactored script.
+- `data/`
+  - `bank_data.csv`: The dataset for this project.
+- `images/`
+  - `eda/`
+    - `age_hist.png`: Ages histogram
+    - `churn_hist.png`: Churns histogram
+    - `corrplot.png`: Correlation plot between all numerical variables
+    - `marital_bar.png`: Marital status distribution bar plot
+    - `ttc_dens.png`: Total transaction distribution plot
+  - `results/`
+    - `classification_results.png`: Results of the classification process
+    - `feature_importances.png`: Feature importances report
+    - `roc_curve.png`: ROC curve report
+    - `summary.png`: Summary plot that shows feature impacts
+
+- `models/`:
+  - `logistic_model.pkl`: The file that contains the logistic model
+  - `rfc_model.pkl`: The file that contains the random forest classifier model
+- `test_images/**` and `test_models/*`: same as `images/**` and `models/*` but
+  for the tests
+- `churn_library.py`: The refactored script
+- `churn_notebook-original.pynb`: The original notebook that contains
+  unrefactored code.
+- `churn_notebook.pynb`: The notebook that contains unrefactored code
 - `churn_script_logging_and_testing.py`: Unit testing file. Uses `pytest`
+- `Guide.ipynb`: The notebook that contains a guidance for this project.
+- `README.md`: This documentation file.
+- `requirements_py3.6.txt`: Python requirements file for Python 3.6.3.
+- `requirements_py3.8.txt`: Python requirements file for Python 3.8.
+- `successful_pytest_run.png`: A screenshot showing a successful pytest run.
+
 
 ## Running Files
 
@@ -40,8 +69,8 @@ python churn_library.py
 
 ### Follows PEP 8 Guidelines
 
-- Running `pylint ./churn_libraries.py` gave me a score of 7.84.
-- Running `pylint ./churn_script_logging_and_tests.py` gave me a score of 7.62.
+- Running `pylint ./churn_library.py` gave me a score of 7.86.
+- Running `pylint ./churn_script_logging_and_tests.py` gave me a score of 7.74.
 
 
 ### Runs Successfully
