@@ -40,8 +40,8 @@ python churn_library.py
 
 ### Follows PEP 8 Guidelines
 
- Running `pylint ./churn_libraries.py` gave me a score of 7.84.
- Running `pylint ./churn_script_logging_and_tests.py` gave me a score of 7.62.
+- Running `pylint ./churn_libraries.py` gave me a score of 7.84.
+- Running `pylint ./churn_script_logging_and_tests.py` gave me a score of 7.62.
 
 
 ### Runs Successfully
