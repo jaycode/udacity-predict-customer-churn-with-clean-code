@@ -44,9 +44,16 @@ def test_import():
         raise err
 
 
+# By setting the ini file (pytest.ini), simply running the following command would create the log:
+# pytest test_pytest_logging_ok.py
+#
+# Alternative 1:
 # With the following code, you should run pytest by running this script with the `python` command.
-# Alternatively, you could run the following command:
+#
+# Alternative 2:
+# you could also run the following command:
 # pytest test_pytest_logging_ok.py --log-level=INFO --log-file=./churn_library_pytest_command.log
+
 def main():
     options = [
         '--log-level=INFO',
