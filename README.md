@@ -38,6 +38,7 @@ In this project, we identify credit card customers that are most likely to churn
 - `requirements_py3.6.txt`: Python requirements file for Python 3.6.3.
 - `requirements_py3.8.txt`: Python requirements file for Python 3.8.
 - `successful_pytest_run.png`: A screenshot showing a successful pytest run.
+- `logging_tests`: Not needed. Just some testing code to find out which logging method works with pytest.
 
 
 ## Running Files
