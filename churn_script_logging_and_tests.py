@@ -10,29 +10,6 @@ import logging
 import pytest
 import churn_library as cls
 
-LOG_DIR = './logs'
-LOG_FILENAME = 'churn_library_test.log'
-LOG_PATH = os.path.join(LOG_DIR, LOG_FILENAME)
-
-# Create logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# Create file handler
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
-
-file_handler = logging.FileHandler(LOG_PATH, mode='w')
-file_handler.setLevel(logging.INFO)
-
-# Create formatter and add it to the handler
-formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-
-# Add handler to the logger
-logger.addHandler(file_handler)
-
-
 def assert_true(condition, message_when_succeed, message_when_fail):
     '''
     Performs an assertion and uses logging for error.
@@ -46,9 +23,9 @@ def assert_true(condition, message_when_succeed, message_when_fail):
     '''
     try:
         assert condition
-        logger.info(message_when_succeed)
+        logging.info(message_when_succeed)
     except AssertionError as err:
-        logger.error(message_when_fail)
+        logging.error(message_when_fail)
         # err.args requires a set
         err.args = (message_when_fail,)
         raise err
@@ -68,11 +45,11 @@ def assert_equal(a, b, message_when_succeed, message_when_fail):
     '''
     try:
         assert a == b
-        logger.info(message_when_succeed)
+        logging.info(message_when_succeed)
     except AssertionError as err:
         additional_details = f"{a} != {b}"
         msg = f"{message_when_fail} ({additional_details})"
-        logger.error(msg)
+        logging.error(msg)
         # err.args requires a set
         err.args = (msg,)
         raise err
@@ -91,7 +68,7 @@ def remove_all_files(directory):
             os.remove(file_path)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def df():
     '''
     The DataFrame object fixture to use in test functions
@@ -106,16 +83,16 @@ def test_import():
     '''
     try:
         df = cls.import_data("./data/bank_data.csv")
-        logger.info("Testing import_data: SUCCESS")
+        logging.info("Testing import_data: SUCCESS")
     except FileNotFoundError as err:
-        logger.error("Testing import_eda: The file wasn't found")
+        logging.error("Testing import_eda: The file wasn't found")
         raise err
 
     try:
         assert df.shape[0] > 0
         assert df.shape[1] > 0
     except AssertionError as err:
-        logger.error("Testing import_data: The file doesn't appear to have rows and columns")
+        logging.error("Testing import_data: The file doesn't appear to have rows and columns")
         raise err
 
 
